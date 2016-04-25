@@ -32,23 +32,23 @@ modified when reconnected.
 #define LED_TYPE APA102
 #define COLOR_ORDER BGR
 #define NUM_LEDS    144
-#define DATA_RATE 10
+#define DATA_RATE 12
 #define BRIGHTNESS          64
-#define FRAMES_PER_SECOND  500  // Not sure what the range is or what's optimum.  Faster seems to avoid occasional missing LED.
+#define FRAMES_PER_SECOND  5  // Not sure what the range is or what's optimum.  Faster seems to avoid occasional missing LED.
 
-FASTLED_USING_NAMESPACE  // What does this do?
+FASTLED_USING_NAMESPACE  // What does this do ?
 
 // pin 2 on the RGB shield is the red led
-int led1 = 2;
+//int led1 = 2;
 // pin 3 on the RGB shield is the green led
-int led2 = 3;
+//int led2 = 3;
 // pin 4 on the RGB shield is the blue led
-int led3 = 4;
+//int led3 = 4;
 
 // current color (start with white)
-int red = 0;
+int red = 255;
 int green = 255;
-int blue = 36;
+int blue = 255;
 
 CRGB leds[NUM_LEDS];
 
@@ -73,19 +73,8 @@ void setup() {
 
   delay(500); // 3 second delay for recovery
 
-  
-  // setup the leds for output
-  pinMode(led1, OUTPUT);
-  pinMode(led2, OUTPUT);  
-  pinMode(led3, OUTPUT);
-
-  // set initial color
-  analogWrite(led1, red);
-  analogWrite(led2, green);
-  analogWrite(led3, blue);
-
   // this is the data we want to appear in the advertisement
-  SimbleeForMobile.advertisementData = "rgb";
+  SimbleeForMobile.advertisementData = "ColWheel";
 
   // use a shared cache
   SimbleeForMobile.domain = "Simblee.com";
@@ -94,7 +83,9 @@ void setup() {
 
 
    // tell FastLED about the LED strip configuration
-  FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER, DATA_RATE>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+//  FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, >(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+
+FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER, DATA_RATE>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);;
 
   // set master brightness control
   FastLED.setBrightness(BRIGHTNESS);
@@ -109,17 +100,14 @@ void setup() {
 
 void loop() {
 
-
   // process must be called in the loop for SimbleeForMobile
-  SimbleeForMobile.process();
   FastLED.show();
 
-    // insert a delay to keep the framerate modest
-// FastLED.delay(1000 / FRAMES_PER_SECOND);
-  // Set initial brightness
- //FastLED.setBrightness(brightness);
+  // insert a delay to keep the framerate modest
+  FastLED.delay(1000 / FRAMES_PER_SECOND);
 
- 
+  SimbleeForMobile.process();
+
 }
 
 
@@ -164,9 +152,9 @@ void ui()
 
 void update()
 {
-  analogWrite(led1, red);
-  analogWrite(led2, green);
-  analogWrite(led3, blue);
+//  analogWrite(led1, red);
+//  analogWrite(led2, green);
+//  analogWrite(led3, blue);
 
   
   for(int i = 0; i < NUM_LEDS; i++) { 
